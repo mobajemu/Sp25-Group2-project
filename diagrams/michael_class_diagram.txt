@@ -1,0 +1,37 @@
+classDiagram
+
+class Issue {
+  +string url
+  +string creator
+  +string state
+  +string title
+  +string text
+  +int number
+  +string created_date
+  +string updated_date
+  +string timeline_url
+  +Events[] events
+  +Label[] labels
+  +Assignee[] assignees
+}
+
+class Events {
+  +string event_type
+  +string author
+  +string event_date
+  +string comment
+}
+
+class Label {
+  +string kind
+  +string status
+}
+
+class Assignee {
+  +string username
+}
+
+Issue --> "1" Label
+Events --> "1" Label
+Issue --> "0..*" Events
+Issue --> "0..*" Assignee

@@ -1,0 +1,32 @@
+erDiagram
+
+    ISSUE {
+        string url
+        string creator
+        string state
+        string title
+        string text
+        int number
+        string created_date
+        string updated_date
+        string timeline_url
+    }
+    EVENTS{
+        string event_type
+        string author
+        string event_date
+        string comment
+    }
+    LABEL {
+        string kind
+        string status
+    }
+    ASSIGNEES {
+        string username
+    }
+
+
+  ISSUE ||--|| LABEL : tagged_with
+  EVENTS ||--|| LABEL : has
+  ISSUE ||--|{ EVENTS : has
+  ISSUE ||--o{ ASSIGNEES : assigned_to
