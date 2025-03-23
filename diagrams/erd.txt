@@ -1,0 +1,32 @@
+erDiagram
+    USER ||--o{ ISSUE : creates
+    USER }o--o{ ISSUE : assigned_to
+    USER ||--o{ EVENT : performs
+    ISSUE }o--o{ LABEL : has
+    ISSUE ||--|{ EVENT : has
+    EVENT }o--o| LABEL : assigned
+
+    USER {
+        int id
+        string name
+    }
+    ISSUE {
+        int number
+        string url
+        string state
+        string title
+        string text
+        string created_date
+        string updated_date
+        string timeline_url
+    }
+    LABEL {
+        int id
+        string name
+    }
+    EVENT {
+        int id
+        string event_type
+        string event_date
+        string comment
+    }
