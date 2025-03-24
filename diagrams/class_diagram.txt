@@ -9,11 +9,11 @@ classDiagram
     }
     class data_loader.py {
     }
-    class issue_type_analysis.py {
+    class engagement_resolution_analysis.py {
     }
-    class contributor_activity_analysis.py {
+    class issue_reopen_analysis.py {
     }
-    class issue_lifecycle_analysis.py {
+    class top_contributors_analysis.py {
     }
     class model.py {
     }
@@ -26,21 +26,21 @@ classDiagram
         +get_issues() List~Issue~
         -_load() List~Issue~
     }
-    class ExampleAnalysis {
-        +String USER
-        +run()
-    }
-    class IssueTypeAnalysis {
+    class EngagementResolutionAnalysis {
         +String LABEL_ID
         +run()
+        -_get_engagement(issue) int
+        -_get_resolution_time(issue) int
     }
-    class ContributorActivityAnalysis {
+    class IssueReopenAnalysis {
         +String USER
         +run()
+        -_is_reopened(issue) boolean
     }
-    class IssueLifecycleAnalysis {
+    class TopContributorAnalysis {
         +String LABEL_ID
         +run()
+        -_get_handlers(issue)
     }
     class State {
         <<enumeration>>
@@ -84,29 +84,28 @@ classDiagram
     data_loader.py --o config.py
     data_loader.py --o Issue
 
-    issue_type_analysis.py --o IssueTypeAnalysis
-    issue_type_analysis.py --> DataLoader
-    issue_type_analysis.py --> Issue
-    issue_type_analysis.py --> Event
-    issue_type_analysis.py --> Label
-    issue_type_analysis.py --> User
-    issue_type_analysis.py --o config.py
+    engagement_resolution_analysis.py --o EngagementResolutionAnalysis
+    engagement_resolution_analysis.py --> DataLoader
+    engagement_resolution_analysis.py --> Issue
+    engagement_resolution_analysis.py --> Event
+    engagement_resolution_analysis.py --> Label
+    engagement_resolution_analysis.py --o config.py
 
-    contributor_activity_analysis.py --o ContributorActivityAnalysis
-    contributor_activity_analysis.py --> DataLoader
-    contributor_activity_analysis.py --> Issue
-    contributor_activity_analysis.py --> Event
-    contributor_activity_analysis.py --> Label
-    contributor_activity_analysis.py --> User
-    contributor_activity_analysis.py --o config.py
+    issue_reopen_analysis.py --o IssueReopenAnalysis
+    issue_reopen_analysis.py --> DataLoader
+    issue_reopen_analysis.py --> Issue
+    issue_reopen_analysis.py --> Event
+    issue_reopen_analysis.py --> Label
+    issue_reopen_analysis.py --> State
+    issue_reopen_analysis.py --o config.py
 
-    issue_lifecycle_analysis.py --o IssueLifecycleAnalysis
-    issue_lifecycle_analysis.py --> DataLoader
-    issue_lifecycle_analysis.py --> Issue
-    issue_lifecycle_analysis.py --> Event
-    issue_lifecycle_analysis.py --> Label
-    issue_lifecycle_analysis.py --> State
-    issue_lifecycle_analysis.py --o config.py
+    top_contributors_analysis.py --o TopContributorAnalysis
+    top_contributors_analysis.py --> DataLoader
+    top_contributors_analysis.py --> Issue
+    top_contributors_analysis.py --> Event
+    top_contributors_analysis.py --> Label
+    top_contributors_analysis.py --> User
+    top_contributors_analysis.py --o config.py
 
     model.py --o State
     model.py --o Event
@@ -115,9 +114,9 @@ classDiagram
     model.py --o Label
 
     run.py --o config.py
-    run.py --> IssueTypeAnalysis
-    run.py --> ContributorActivityAnalysis
-    run.py --> IssueLifecycleAnalysis
+    run.py --> EngagementResolutionAnalysis
+    run.py --> IssueReopenAnalysis
+    run.py --> TopContributorAnalysis
 
     Issue --o Label
     Issue --o User
