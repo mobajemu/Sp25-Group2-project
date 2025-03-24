@@ -1,0 +1,88 @@
+---
+config:
+  theme: redux
+---
+flowchart TD
+ subgraph s1[" "]
+        n1["USERS"]
+        n2(["user_id"])
+        n3(["user_name"])
+  end
+ subgraph s4[" "]
+        n24["Events"]
+        n25(["event_id"])
+        n28(["date"])
+        n29(["comment"])
+        n30(["event_type_id"])
+        n32(["label_id"])
+        n99(["author_id"])
+  end
+ subgraph s11[" "]
+        n63["ISSUE_ASSIGNEES_USER"]
+        n64(["issue_id"])
+        n65(["assignee_id<br>(user_id)"])
+  end
+ subgraph s13[" "]
+        n70["ISSUE_EVENT"]
+        n71(["issue_id"])
+        n72(["event_id"])
+  end
+ subgraph s14[" "]
+        n74["ISSUE_URL_TITLE_CREATOR"]
+        n75(["issue_id"])
+        n76(["url"])
+        n77(["title"])
+        n85(["creator_id<br>(user_id)"])
+        n86(["state"])
+  end
+ subgraph s15[" "]
+        n79["ISSUE_LABEL"]
+        n80(["issue_id"])
+        n81(["label_id"])
+        n93(["creator_id"])
+  end
+ subgraph s16[" "]
+        n82["LABELS"]
+        n83(["label_id"])
+        n84(["label_name"])
+  end
+ subgraph s17[" "]
+        n87["EVENT_TYPE"]
+        n88(["event_type_id"])
+        n89(["event_name"])
+  end
+ subgraph s18["TOTAL LABEL COUNT"]
+        n94["LABEL_COUNT"]
+        n95(["label_id"])
+        n96(["issue_per_label"])
+        n98(["event_per_label"])
+  end
+ subgraph s19["TOTAL_ENGAGEMENT"]
+        n100["CONTRIBUTOR_ENGAEMENT_COUNT"]
+        n101(["author_id"])
+        n102(["count_total_event_create"])
+        n103(["most_label_created_id<br>(label_id)"])
+        n104(["count_total_most_label_interaction"])
+  end
+    n1 --- n2 & n3
+    n24 --- n25 & n28 & n29 & n30 & n32 & n99
+    n63 --- n64 & n65
+    n70 --- n71 & n72
+    n74 --- n75 & n76 & n77 & n85 & n86
+    s1 -- A User can create many Issue --> s14
+    s14 -- An issue_id can have manyone assignee_id --> s11
+    s14 -- An issue_id can have many event_id --> s13
+    s14 -- An issue_id can have many label_id --> s15
+    s13 --> s4
+    s11 -- assignee_id can have only one user_name --> s1
+    n79 --- n80 & n81 & n93
+    s15 -- A label_id can have only one label_name --> s16
+    n82 --- n83 & n84
+    n87 --> n88 & n89
+    s4 -- "<span style=color:>A label_id can have only one label_name</span>" --> s16
+    s4 --> s17 & s18 & s19
+    s15 --> s18
+    n94 --- n95 & n96 & n98
+    s18 --> s16
+    n100 --- n101 & n102 & n103 & n104
+    n1@{ shape: rect}

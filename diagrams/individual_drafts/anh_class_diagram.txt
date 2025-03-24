@@ -1,0 +1,86 @@
+classDiagram
+    class User {
+        +String user_id
+        +String user_name
+        +List~Issue~ created_issues
+        +List~Event~ created_events
+    }
+
+    class Issue {
+        +String issue_id
+        +String url
+        +String title
+        +String creator_id
+        +State state
+        +List~User~ assignees
+        +List~Event~ events
+        +List~Label~ labels
+    }
+
+    class IssueAssignees {
+        +String issue_id
+        +String assignee_id
+    }
+
+    class IssueEvent {
+        +String issue_id
+        +String event_id
+    }
+
+    class Event {
+        +String event_id
+        +datetime date
+        +String comment
+        +String event_type_id
+        +String label_id
+        +String author_id
+    }
+
+    class Label {
+        +String label_id
+        +String label_name
+    }
+
+    class IssueLabel {
+        +String issue_id
+        +String label_id
+        +String creator_id
+    }
+
+    class EventType {
+        +String event_type_id
+        +String event_name
+    }
+
+    class LabelCount {
+        +String label_id
+        +int issue_per_label
+        +int event_per_label
+    }
+
+    class ContributorEngagement {
+        +String author_id
+        +int count_total_event_create
+        +String most_label_created_id
+        +int count_total_most_label_interaction
+    }
+
+    class State {
+        <<enumeration>>
+        open
+        closed
+    }
+
+    User --> Issue : creates
+    User --> Event : creates
+    Issue --> IssueAssignees : has assignees
+    Issue --> IssueEvent : has events
+    Issue --> IssueLabel : has labels
+    IssueEvent --> Event : links to
+    IssueAssignees --> User : assigned to
+    IssueLabel --> Label : belongs to
+    Event --> EventType : has
+    Event --> Label : associated with
+    LabelCount --> Label : tracks
+    ContributorEngagement --> User : tracks contributions
+    ContributorEngagement --> Label : tracks label activity
