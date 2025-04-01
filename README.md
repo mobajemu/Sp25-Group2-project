@@ -54,3 +54,17 @@ Group Members:
 **Output:** A ranked list of contributors and the distribution of issue types they handle.
 
 - A user handles an issue if they've closed, commented on, or been assigned to an issue.
+
+## To Do's:
+
+### Kevin
+
+- Complete Analysis #1
+
+### Anh
+
+- Complete Analysis #3
+
+### Michael
+
+- Complete Analysis #2
