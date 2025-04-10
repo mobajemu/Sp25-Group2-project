@@ -40,4 +40,8 @@ class DataLoader:
 
 if __name__ == '__main__':
     # Run the loader for testing
-    DataLoader().get_issues()
+    issues_data = DataLoader().get_issues()
+    print(issues_data)
+
+    for issue in issues_data:
+        print(issue.url)
