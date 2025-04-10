@@ -32,37 +32,46 @@ class Analysis3:
     def __init__(self):
         self.issues_data = DataLoader().get_issues()
 
-    def get_unique_items(self):
-        unique_creators = set()
-        unique_author = set()
-        unique_events = set()
+        # Create a set of all unique authors from events
+        self.unique_authors = set()
         for issue in self.issues_data:
-            if issue.creator:
-                unique_creators.add(issue.creator)
-            
             for event in issue.events:
-                unique_events.add(event.event_type)
-                unique_author.add(event.author)
+                if event.author:
+                    self.unique_authors.add(event.author)
+
+        # Initialize contributors hash table
+        self.contributors = {
+            author: Contributor(author)
+            for author in self.unique_authors
+        }
+
+        # Record events into each contributor
+        for issue in self.issues_data:
+            for event in issue.events:
+                if event.author and event.event_type:
+                    self.contributors[event.author].record_event(event.event_type)
+
+    def show_top_contributors(self, top_n=10):
+        sorted_contributors = sorted(
+            self.contributors.values(),
+            key=lambda c: sum(entry["count"] for entry in c.frequency_activity),
+            reverse=True
+        )
+
+        print(f"\nTop {top_n} most active contributors:")
+        for i, c in enumerate(sorted_contributors[:top_n], start=1):
+            total = sum(entry["count"] for entry in c.frequency_activity)
+            print(f"\n{i}. {c.name} — Total Events: {total}")
+            print("   Breakdown by event type:")
+            for entry in c.frequency_activity:
+                if entry["count"] > 0:
+                    print(f"     - {entry['event_type']}: {entry['count']}")
 
 
-        
-        print(f"Total unique creators: {len(unique_creators)}")
-        print(f"Total unique events: {len(unique_events)}")
-        print(f"Total unique authors: {len(unique_author)}")
 
-        if unique_creators.issubset(unique_author):
-            print("✅ All creators are also authors.")
-        else:
-            missing = unique_creators - unique_author
-            print("❌ Some creators are not in authors:")
-            print(missing)
-
-    
 
 
 
 
 analysis = Analysis3()
-analysis.get_unique_items()
-
-
+analysis.show_top_contributors()
