@@ -20,16 +20,16 @@ Group Members:
 
 ## Analyses
 
-### 1. Engagement to Resolution Time
+### 1. Average Resolution Time vs Number of comments
 
 **Insight:** Do issues with more discussion get resolved faster or slower?
 
 **Input:** Label (optional)
 
-**Output:** Scatter plot
+**Output:** Line graph
 
 - X axis - Engagement (number of comments)
-- Y axis - Resolution time (days)
+- Y axis - Average resolution time (days)
 - Each dot represents an issue.
   - If no label is inputted, all issues will be plotted.
   - If a label is inputted, only issues with that label will be plotted.
