@@ -90,6 +90,17 @@ class Analysis3:
 
         # Print out the regression line coefficients
         print(f"Linear Regression Model: y = {self.model.coef_[0]} * X + {self.model.intercept_}")
+
+        # Plot the data and the regression line
+        plt.figure(figsize=(8, 6))
+        plt.scatter(self.X, self.y, color='blue', label='Actual data')
+        plt.plot(self.X, predictions, color='red', linewidth=2, label='Regression line')
+        plt.title('Linear Regression Fit')
+        plt.xlabel('X')
+        plt.ylabel('y')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
     
     def predict_contribution_for_active_days(self, day_active):
         predicted_contributions = self.model.predict([[day_active]])  
@@ -149,7 +160,7 @@ class Analysis3:
         sorted_contributors = sorted(contributors_with_ratios, key=lambda x: x[2], reverse=True)
 
         # Print top contributors based on ratio
-        print("\nTop 10 Contributors by Predicted-to-Actual Contributions Ratio:")
+        print("\nTop 3 Contributors by Predicted-to-Actual Contributions Ratio:")
         for i, (name, total_contributions, ratio, duration_in_days) in enumerate(sorted_contributors[:num_of_contributors], start=1):
             print(f"{i}. {name} - total_contributions: {total_contributions} - Duration: {duration_in_days} - Ratio: {ratio:.2f}")
 
@@ -158,6 +169,6 @@ class Analysis3:
 
 # Run the analysis
 analysis = Analysis3()
-# analysis.show_top_contributors()
+analysis.show_top_contributors()
 analysis.apply_linear_regression()
-analysis.find_most_contributor_ratio(600)
+analysis.find_most_contributor_ratio(3)
