@@ -38,7 +38,7 @@ class EngagementResolutionAnalysis:
         comment_count = 0
 
         for event in issue.events:
-            if event.event_type == "commented":
+            if event.event_type == "commented" and "[bot]" not in event.author:
                 comment_count += 1
 
         return comment_count
