@@ -95,15 +95,15 @@ class Analysis3:
         plt.figure(figsize=(8, 6))
         plt.scatter(self.X, self.y, color='blue', label='Actual data')
         plt.plot(self.X, predictions, color='red', linewidth=2, label='Regression line')
-        plt.title('Linear Regression Fit')
-        plt.xlabel('Contributions')
-        plt.ylabel('Number of Days')
+        plt.title('Days active vs. Total Contributions')
+        plt.xlabel('Total Contributions')
+        plt.ylabel('Number of Days Active')
         plt.legend()
         plt.grid(True)
         plt.show()
-    
+
     def predict_contribution_for_active_days(self, day_active):
-        predicted_contributions = self.model.predict([[day_active]])  
+        predicted_contributions = self.model.predict([[day_active]])
         return predicted_contributions[0]
 
     def show_top_contributors(self, top_n=10):
@@ -133,12 +133,12 @@ class Analysis3:
                 if entry["count"] > 0:
                     print(f"     - {entry['event_type']}: {entry['count']}")
 
-    def find_most_contributor_ratio(self, num_of_contributors): 
+    def find_most_contributor_ratio(self, num_of_contributors):
         contributors_with_ratios = []
 
         for contributor in self.contributors.values():
             total_contributions = sum(entry["count"] for entry in contributor.frequency_activity)
-            
+
             # Check if first and last dates exist
             if contributor.first_date and contributor.last_date:
                 duration_in_days = (contributor.last_date - contributor.first_date).days
