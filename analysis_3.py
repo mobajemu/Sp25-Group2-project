@@ -81,7 +81,12 @@ class Analysis3:
         self.original_model = LinearRegression()
         self.original_model.fit(self.X, self.y)
         self.predictions_original = self.original_model.predict(self.X)
-        print(f"[Original] y = {self.original_model.coef_[0]} * X + {self.original_model.intercept_}")
+        coef_orig = self.original_model.coef_[0]
+        intercept_orig = self.original_model.intercept_
+        print(f"[Original] y = {coef_orig} * X + {intercept_orig}")
+        # Calculate minimum days for non-negative prediction
+        self.min_days_original = max(0, -intercept_orig / coef_orig) if coef_orig != 0 else float('inf')
+        print(f"[Original] Minimum active days for y ≥ 0: {self.min_days_original:.2f}")
 
         # --- FILTERED MODEL (±30%) ---
         relative_error = np.abs((self.y - self.predictions_original) / self.y)
@@ -91,7 +96,12 @@ class Analysis3:
         self.model_filtered = LinearRegression()
         self.model_filtered.fit(self.X_filtered, self.y_filtered)
         self.predictions_filtered =self.model_filtered.predict(self.X_filtered)
-        print(f"[Filtered ±30%] y = {self.model_filtered.coef_[0]} * X + {self.model_filtered.intercept_}")    
+        coef_filtered = self.model_filtered.coef_[0]
+        intercept_filtered = self.model_filtered.intercept_
+        print(f"[Filtered ±30%] y = {coef_filtered} * X + {intercept_filtered}")
+        # Calculate minimum days for non-negative prediction
+        self.min_days_filtered = max(0, -intercept_filtered / coef_filtered) if coef_filtered != 0 else float('inf')
+        print(f"[Filtered ±30%] Minimum active days for y ≥ 0: {self.min_days_filtered:.2f}")
     
     def plot_top_contributors(self, ax, top_n=10):
         # Sort contributors by total contributions
@@ -155,7 +165,7 @@ class Analysis3:
         for name, c in self.contributors.items():
             if c.first_date and c.last_date:
                 days_active = (c.last_date - c.first_date).days
-                if days_active > 0 and c.total_contributions > 0:
+                if days_active > self.min_days_original and c.total_contributions > 0:
                     contributor_data.append((name, days_active, c.total_contributions))
 
         if not contributor_data:
