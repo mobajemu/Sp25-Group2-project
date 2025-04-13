@@ -47,13 +47,26 @@ Group Members:
 
 ### 3. Top contributors' specialties
 
-**Insight:** Who are the most active contributors and what types of issues do they spend their time on?
+**Insight:** Who are the most active contributors and what types of issues do they spend their time on
 
-**Input:** None
+**Input:** None required. Optionally, use --user to inspect data for a specific contributor.
 
-**Output:** A ranked list of contributors and the distribution of issue types they handle.
+**Output:** 
 
-- A user handles an issue if they've closed, commented on, or been assigned to an issue.
+- A ranked list of the top contributors based on total interactions (comments, labels, assignments, etc.).
+
+- For each contributor:
+
+  - Total number of contributions.
+
+  - First and last contribution dates.
+
+  - Duration of activity.
+
+  - Breakdown of contributions by type.
+
+  - (Graphically) Average contributions per day and performance compared to the regression model.
+
 
 ## To Do's:
 
