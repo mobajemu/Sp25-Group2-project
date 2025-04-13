@@ -19,12 +19,16 @@ class Contributor:
         ]
         self.first_date = None
         self.last_date = None
+        self.total_contributions = 0  # Track total contributions for each contributor
 
     def record_event(self, event_type, event_date):
         for entry in self.frequency_activity:
             if entry["event_type"] == event_type:
                 entry["count"] += 1
                 break
+
+        # Update total contributions
+        self.total_contributions = sum(entry["count"] for entry in self.frequency_activity)
 
         # Use event_date directly since it's already a datetime object
         if self.first_date is None or event_date < self.first_date:
@@ -40,7 +44,6 @@ class Contributor:
 
     def __repr__(self):
         return f"<Contributor {self.name}: {self.frequency_activity}>"
-
 
 class Analysis3:
     def __init__(self):
@@ -68,11 +71,10 @@ class Analysis3:
         self.y = []  # Total contributions
 
         for contributor in self.contributors.values():
-            total_contributions = sum(entry["count"] for entry in contributor.frequency_activity)
             if contributor.first_date and contributor.last_date:
                 duration_in_days = (contributor.last_date - contributor.first_date).days
                 self.X.append([duration_in_days])  # Active duration as a feature
-                self.y.append(total_contributions)  # Total contributions as the target variable
+                self.y.append(contributor.total_contributions)  # Total contributions as the target variable
 
         # Convert to numpy arrays
         self.X = np.array(self.X)
@@ -80,45 +82,28 @@ class Analysis3:
 
     def apply_linear_regression(self):
         # Fit a linear regression model
-        model = LinearRegression()
-        model.fit(self.X, self.y)
+        self.model = LinearRegression()
+        self.model.fit(self.X, self.y)
 
         # Get predictions
-        predictions = model.predict(self.X)
+        predictions = self.model.predict(self.X)
 
         # Print out the regression line coefficients
-        print(f"Linear Regression Model: y = {model.coef_[0]} * X + {model.intercept_}")
-
-        # Plot the results
-        plt.scatter(self.X, self.y, color='blue', label='Data Points')
-        plt.plot(self.X, predictions, color='red', label='Regression Line')
-        plt.xlabel('Active Duration (Days)')
-        plt.ylabel('Total Contributions')
-        plt.title('Linear Regression: Total Contributions vs Active Duration')
-        plt.legend()
-        plt.show()
+        print(f"Linear Regression Model: y = {self.model.coef_[0]} * X + {self.model.intercept_}")
     
-    def test_active_duration(self):
-        # Test the prediction for active duration = 1 day
-        model = LinearRegression()
-        model.fit(self.X, self.y)  # Fit the model again with the training data
-
-        day_active = 683
-        # Predict contributions for active duration = 1 day
-        predicted_contributions = model.predict([[day_active]]) # Predict for X=1 (1 day)
-
-        print(f"Predicted number of contributions for {day_active} day of activities: {predicted_contributions[0]:.2f}")
+    def predict_contribution_for_active_days(self, day_active):
+        predicted_contributions = self.model.predict([[day_active]])  
+        return predicted_contributions[0]
 
     def show_top_contributors(self, top_n=10):
         sorted_contributors = sorted(
             self.contributors.values(),
-            key=lambda c: sum(entry["count"] for entry in c.frequency_activity),
+            key=lambda c: c.total_contributions,
             reverse=True
         )
 
         print(f"\nTop {top_n} most active contributors:")
         for i, c in enumerate(sorted_contributors[:top_n], start=1):
-            total_events = sum(entry["count"] for entry in c.frequency_activity)
             first_date_str = c.get_first_date_str()
             last_date_str = c.get_last_date_str()
 
@@ -128,7 +113,7 @@ class Analysis3:
                 duration_days = "N/A"
 
             print(f"\n{i}. {c.name}")
-            print(f"   Total Contributions: {total_events}")
+            print(f"   Total Contributions: {c.total_contributions}")
             print(f"   First Contribution:  {first_date_str}")
             print(f"   Last Contribution:   {last_date_str}")
             print(f"   Active Duration:     {duration_days} days")
@@ -137,9 +122,42 @@ class Analysis3:
                 if entry["count"] > 0:
                     print(f"     - {entry['event_type']}: {entry['count']}")
 
+    def find_most_contributor_ratio(self, num_of_contributors): 
+        contributors_with_ratios = []
+
+        for contributor in self.contributors.values():
+            total_contributions = sum(entry["count"] for entry in contributor.frequency_activity)
+            
+            # Check if first and last dates exist
+            if contributor.first_date and contributor.last_date:
+                duration_in_days = (contributor.last_date - contributor.first_date).days
+
+                # Skip contributors with zero active duration
+                if duration_in_days == 0:
+                    continue
+
+                # Predict contributions based on active days
+                predicted_contributions = self.predict_contribution_for_active_days(duration_in_days)
+
+                # Avoid division by zero
+                if total_contributions > 0:
+                    ratio = total_contributions / predicted_contributions
+                    # Append name, total contributions, and the ratio to the list
+                    contributors_with_ratios.append((contributor.name, total_contributions, ratio, duration_in_days))
+
+        # Sort contributors based on the ratio
+        sorted_contributors = sorted(contributors_with_ratios, key=lambda x: x[2], reverse=True)
+
+        # Print top contributors based on ratio
+        print("\nTop 10 Contributors by Predicted-to-Actual Contributions Ratio:")
+        for i, (name, total_contributions, ratio, duration_in_days) in enumerate(sorted_contributors[:num_of_contributors], start=1):
+            print(f"{i}. {name} - total_contributions: {total_contributions} - Duration: {duration_in_days} - Ratio: {ratio:.2f}")
+
+
+
 
 # Run the analysis
 analysis = Analysis3()
-analysis.show_top_contributors()
+# analysis.show_top_contributors()
 analysis.apply_linear_regression()
-analysis.test_active_duration()
+analysis.find_most_contributor_ratio(600)
