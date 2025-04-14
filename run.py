@@ -10,8 +10,8 @@ import argparse
 import config
 from example_analysis import ExampleAnalysis
 from analysis_1 import EngagementResolutionAnalysis
+from analysis_2 import IssueReopenRate
 from analysis_3 import Analysis3
-
 
 def parse_args():
     """
@@ -52,7 +52,7 @@ if args.feature == 0:
 elif args.feature == 1:
     EngagementResolutionAnalysis().run()
 elif args.feature == 2:
-    pass # TODO call second analysis
+    IssueReopenRate().run()
 elif args.feature == 3:
     analysis = Analysis3()
     
