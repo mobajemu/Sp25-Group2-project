@@ -18,17 +18,17 @@ class State(str, Enum):
 
 
 class Event:
-    
+
     def __init__(self, jobj:any):
         self.event_type:str = None
-        self.author:str = None
+        self.author:User = None
         self.event_date:datetime = None
-        self.label:str = None
+        self.label:Label = None
         self.comment:str = None
-        
+
         if jobj is not None:
             self.from_json(jobj)
-    
+
     def from_json(self, jobj:any):
         self.event_type = jobj.get('event_type')
         self.author = jobj.get('author')
@@ -38,16 +38,16 @@ class Event:
             pass
         self.label = jobj.get('label')
         self.comment = jobj.get('comment')
-        
-        
+
+
 class Issue:
-    
+
     def __init__(self, jobj:any=None):
         self.url:str = None
-        self.creator:str = None
-        self.labels:List[str] = []
+        self.creator:User = None
+        self.labels:List[Label] = []
         self.state:State = None
-        self.assignees:List[str] = []
+        self.assignees:List[User] = []
         self.title:str = None
         self.text:str = None
         self.number:int = -1
@@ -55,10 +55,10 @@ class Issue:
         self.updated_date:datetime = None
         self.timeline_url:str = None
         self.events:List[Event] = []
-        
+
         if jobj is not None:
             self.from_json(jobj)
-    
+
     def from_json(self, jobj:any):
         self.url = jobj.get('url')
         self.creator = jobj.get('creator')
@@ -81,3 +81,15 @@ class Issue:
             pass
         self.timeline_url = jobj.get('timeline_url')
         self.events = [Event(jevent) for jevent in jobj.get('events',[])]
+
+class User:
+
+    def __init__(self):
+        self.id:int = -1
+        self.name:str = None
+
+class Label:
+
+    def __init__(self):
+        self.id:int = -1
+        self.name:str = None
