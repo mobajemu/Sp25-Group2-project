@@ -1,12 +1,10 @@
 
 from typing import List
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-from datetime import datetime
 
 from data_loader import DataLoader
-from model import Issue,Event,State
+from model import Issue,State
 import config
 
 class EngagementResolutionAnalysis:
@@ -59,15 +57,24 @@ class EngagementResolutionAnalysis:
 
     def _show_plot(self, df):
         if self.LABEL:
-            title = f"Resolution Time vs. Number of Comments for '{self.LABEL}' Issues"
+            title = f"Resolution Time vs. Number of Comments for Issues Labeled '{self.LABEL}'"
         else:
             title = "Resolution Time vs. Number of Comments"
 
+        fig, axs = plt.subplots(1, 2, figsize=(20, 8))
+
         grouped = df.groupby("num_comments")["resolution_time"].mean().reset_index()
-        plt.plot(grouped["num_comments"], grouped["resolution_time"], marker="o")
-        plt.xlabel("Number of Comments")
-        plt.ylabel("Average Resolution Time (days)")
-        plt.title(title)
+        axs[0].plot(grouped["num_comments"], grouped["resolution_time"], marker="o")
+        axs[0].set_xlabel("Number of Comments")
+        axs[0].set_ylabel("Average Resolution Time (days)")
+        axs[0].set_title(f"Average {title}")
+
+        axs[1].scatter(df["num_comments"], df["resolution_time"], alpha=0.7, color='skyblue', edgecolors='k')
+        axs[1].set_xlabel("Number of Comments")
+        axs[1].set_ylabel("Resolution Time (days)")
+        axs[1].set_title(title)
+
+        plt.tight_layout()
         plt.show()
 
 if __name__ == '__main__':
