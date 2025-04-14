@@ -1,4 +1,5 @@
 # Import modules
+from typing import List
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -29,12 +30,12 @@ class IssueReopenRate:
 
     # Function to determine if the 'reopened' event label is present.
     @staticmethod
-    def _check_reopened(row):
+    def _check_reopened(issue:Issue):
         # Access the events from the row if present, else default to an empty list.
-        events = row.get('events', [])
+        events = issue.events
         if isinstance(events, list):
             for event in events:
-                if event.get('event_type') == 'reopened':
+                if event.event_type == 'reopened':
                     return 1
         return 0
 
@@ -74,8 +75,14 @@ class IssueReopenRate:
         plt.show()
 
     def run(self):
-        # df = DataLoader().get_issues()
-        df = pd.read_json('./poetryData/poetry_issues_all.json')
+        issues:List[Issue] = DataLoader().get_issues()
+        # df = pd.read_json('./poetryData/poetry_issues_all.json')
+        rows = []
+
+        for issue in issues:
+            rows.append({"kind": IssueReopenRate._extract_kind(issue.labels), "reopened": IssueReopenRate._check_reopened(issue)})
+
+        df = pd.DataFrame.from_records(rows)
 
         df['kind'] = df['labels'].apply(self._extract_kind)
         df['reopened'] = df.apply(self._check_reopened, axis=1)
@@ -105,7 +112,7 @@ class IssueReopenRate:
 
         LRmodel = LogisticRegression(random_state=42)
         self._plot_reopen_rate(LRmodel, new_df, kind_legend, X_train, X_test, y_train, y_test)
-   
+
 if __name__ == '__main__':
     # Invoke run method when running this module directly
     IssueReopenRate().run()
