@@ -9,14 +9,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
 
 from data_loader import DataLoader
 from model import Issue,Event,State
 import config
 
 class IssueReopenRate:
+
     # Function to extract the kind value from the 'labels' list.
+    @staticmethod
     def _extract_kind(labels):
         if isinstance(labels, list):
             # Look for a label that starts with 'kind/'
@@ -27,6 +28,7 @@ class IssueReopenRate:
         return 'unknown'
 
     # Function to determine if the 'reopened' event label is present.
+    @staticmethod
     def _check_reopened(row):
         # Access the events from the row if present, else default to an empty list.
         events = row.get('events', [])
@@ -36,10 +38,10 @@ class IssueReopenRate:
                     return 1
         return 0
 
-    # Function to plot reopen rate
+    # Function to plot reopen rate.
+    @staticmethod
     def _plot_reopen_rate(model, data, legend, X_train, X_test, y_train, y_test):
-
-        title = "Random Forest Model" if model == RFmodel else "Logsitic Regression"
+        title = "Random Forest Model" if isinstance(model, RandomForestClassifier) else "Logistic Regression"
 
         # Predictions, evaluation, and score
         model.fit(X_train, y_train)
@@ -47,13 +49,12 @@ class IssueReopenRate:
         accuracy = accuracy_score(y_test, y_pred)
         print(f"\nAccuracy: {accuracy*100:.2f}")
 
+        data = data.copy()  # Avoid SettingWithCopyWarning
         # We compute the predicted probability of reopening for each sample in the full dataset
         data['predicted_prob'] = model.predict_proba(data[['kind_encoded']])[:, 1]
 
-        # Group the data by the encoded 'kind' and calculate the average predicted probability
+        # Group the data by the encoded 'kind' and calculate the average predicted probability, map encoded values to their original kind names
         grouped_probs = data.groupby('kind_encoded')['predicted_prob'].mean().reset_index()
-
-        # Map encoded values to their original kind names
         grouped_probs['kind'] = grouped_probs['kind_encoded'].apply(lambda x: legend.get(x, 'unknown'))
 
         # Plot the bar chart using the actual kind names for the x-axis labels
@@ -65,60 +66,46 @@ class IssueReopenRate:
         plt.title('Predicted reopen probability by issue kind')
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.show()
 
         # Save the figures
         os.makedirs('./out', exist_ok=True)
         plt.savefig(f'./out/{title}_reopenrate.png', dpi=300)
-
         print(f"Plots and score's saved successfully in ./out/")
-        return plt
+        plt.show()
 
-    # Load the JSON data into a DataFrame
-    df = DataLoader().get_issues()
+    def run(self):
+        # df = DataLoader().get_issues()
+        df = pd.read_json('./poetryData/poetry_issues_all.json')
 
-    # Create new data frame for the 'kind' and reopened.
-    df['kind'] = df['labels'].apply(_extract_kind)
-    df['reopened'] = df.apply(_check_reopened, axis=1)
+        df['kind'] = df['labels'].apply(self._extract_kind)
+        df['reopened'] = df.apply(self._check_reopened, axis=1)
 
-    # Ensure 'kind' columns are strings
-    df['kind'] = df['kind'].astype(str)
+        df['kind'] = df['kind'].astype(str)
+        label_encoder = LabelEncoder()
+        df['kind_encoded'] = label_encoder.fit_transform(df['kind'])
 
-    # Apply LabelEncoder to 'kind' and 'state' columns
-    label_encoder = LabelEncoder()
-    df['kind_encoded'] = label_encoder.fit_transform(df['kind'])
+        kind_legend = dict(enumerate(label_encoder.classes_))
+        print("Kind Legend:")
+        for key, value in kind_legend.items():
+            print(f"{key}: {value}")
 
-    # Create a legend for 'kind' labels
-    kind_legend = dict(enumerate(label_encoder.classes_))
-    print("Kind Legend:")
-    for key, value in kind_legend.items():
-        print(f"{key}: {value}")
+        new_df = df[['kind_encoded', 'reopened']]
+        print(new_df.head())
 
-    # Build the  DataFrame with the selected columns: kind, state, text_length, time_diff_min, and reopened.
-    new_df = df[['kind_encoded', 'reopened']]
+        predictor = new_df[['kind_encoded']]
+        target = new_df['reopened']
 
-    # Display the first few rows of the  DataFrame
-    print( new_df.head())
+        X_train, X_test, y_train, y_test = train_test_split(
+            predictor, target,
+            test_size=1/3, random_state=42
+        )
 
-    # Update predictors to use the encoded columns
-    predictor = new_df[['kind_encoded']]
-    target = new_df['reopened']
+        RFmodel = RandomForestClassifier(random_state=42)
+        self._plot_reopen_rate(RFmodel, new_df, kind_legend, X_train, X_test, y_train, y_test)
 
-    # Split and test the dataset
-    X_train, X_test, y_train, y_test = train_test_split(
-        predictor, target,
-        test_size=1/3, random_state=42
-    )
-
-    # Build and plot models
-    RFmodel = RandomForestClassifier(random_state=42)
-    RF_fig = _plot_reopen_rate(RFmodel, new_df, kind_legend, X_train, X_test, y_train, y_test)
-    plt.show()
-
-    LRmodel = LogisticRegression(random_state=42)
-    LR_fig = _plot_reopen_rate(LRmodel, new_df, kind_legend, X_train, X_test, y_train, y_test)
-    plt.show()
-    
+        LRmodel = LogisticRegression(random_state=42)
+        self._plot_reopen_rate(LRmodel, new_df, kind_legend, X_train, X_test, y_train, y_test)
+   
 if __name__ == '__main__':
     # Invoke run method when running this module directly
     IssueReopenRate().run()

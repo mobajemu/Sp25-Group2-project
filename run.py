@@ -9,7 +9,7 @@ import argparse
 
 import config
 from example_analysis import ExampleAnalysis
-
+from analysis_2 import IssueReopenRate
 
 def parse_args():
     """
@@ -50,7 +50,7 @@ if args.feature == 0:
 elif args.feature == 1:
     pass # TODO call first analysis
 elif args.feature == 2:
-    pass IssueReopenRate().run()
+    IssueReopenRate().run()
 elif args.feature == 3:
     pass # TODO call third analysis
 else:
