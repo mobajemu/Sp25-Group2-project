@@ -25,16 +25,25 @@ Group Members:
 #### Analyses 1: Average Resolution Time vs Number of comments
 
 **Insight:** Do issues with more discussion get resolved faster or slower?
+
 **Input:** Label (optional)
-**Output:** Line graph
+
+- If no label is provided, all issues will be plotted.
+- If a label is provided, only issues with that label will be plotted.
+
+**Output:**
+
+Line graph
 
 - X axis - Engagement (number of comments)
 - Y axis - Average resolution time (days)
-- Each dot represents an issue.
-  - If no label is inputted, all issues will be plotted.
-  - If a label is inputted, only issues with that label will be plotted.
 
-Run with command:
+Scatter plot
+
+- X axis - Engagement (number of comments)
+- Y axis - Resolution time (days)
+
+**Run with command:**
 
 ```python
 python run.py --feature 1 # Analyze all issues
@@ -45,13 +54,15 @@ python run.py --feature 1 --label {label_name} # Only issues with specified labe
 #### Analyses 2: Issue Reopen Rate
 
 **Insight:** Which types of issues are most likely to be reopened?
+
 **Input:** None
+
 **Output:** Bar chart
 
 - X axis - Labels
 - Y axis - % of issues that get reopened
 
-Run with command:
+**Run with command:**
 
 ```python
 python run.py --feature 2
@@ -60,7 +71,9 @@ python run.py --feature 2
 #### Analyses 3: Top contributors' specialties
 
 **Insight:** Who are the most active contributors and what types of issues do they spend their time on
+
 **Input:** None required. Optionally, use --user to inspect data for a specific contributor.
+
 **Output:**
 
 - A ranked list of the top contributors based on total interactions (comments, labels, assignments, etc.).
@@ -77,7 +90,7 @@ python run.py --feature 2
 
   - (Graphically) Average contributions per day and performance compared to the regression model.
 
-Run with command:
+**Run with command:**
 
 ```python
 python run.py --feature 3
