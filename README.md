@@ -37,7 +37,9 @@ Group Members:
 Run with command:
 
 ```python
-python run.py --feature 1
+python run.py --feature 1 # Analyze all issues
+
+python run.py --feature 1 --label {label_name} # Only issues with specified label
 ```
 
 #### Analyses 2: Issue Reopen Rate
