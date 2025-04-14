@@ -63,7 +63,7 @@ class IssueReopenRate:
         plt.xlabel('Issue Kind')
         plt.ylabel('Predicted Probability of Reopen')
         plt.gca().yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, pos: f'{x*100:.0f}%'))
-        plt.title('Predicted reopen probability by issue kind')
+        plt.title(f'Predicted reopen probability by issue kind using {title}')
         plt.xticks(rotation=45)
         plt.tight_layout()
 
