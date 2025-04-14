@@ -18,14 +18,14 @@ Group Members:
 
 <img src="diagrams/class_diagram.svg" alt="Class Diagram">
 
-## Analyses
+## Task 3: Implementation
 
-### 1. Average Resolution Time vs Number of comments
+### Analyses
+
+#### Analyses 1: Average Resolution Time vs Number of comments
 
 **Insight:** Do issues with more discussion get resolved faster or slower?
-
 **Input:** Label (optional)
-
 **Output:** Line graph
 
 - X axis - Engagement (number of comments)
@@ -34,24 +34,32 @@ Group Members:
   - If no label is inputted, all issues will be plotted.
   - If a label is inputted, only issues with that label will be plotted.
 
-### 2. Issue Reopen Rate
+Run with command:
+
+```python
+python run.py --feature 1
+```
+
+#### Analyses 2: Issue Reopen Rate
 
 **Insight:** Which types of issues are most likely to be reopened?
-
 **Input:** None
-
 **Output:** Bar chart
 
 - X axis - Labels
 - Y axis - % of issues that get reopened
 
-### 3. Top contributors' specialties
+Run with command:
+
+```python
+python run.py --feature 2
+```
+
+#### Analyses 3: Top contributors' specialties
 
 **Insight:** Who are the most active contributors and what types of issues do they spend their time on
-
 **Input:** None required. Optionally, use --user to inspect data for a specific contributor.
-
-**Output:** 
+**Output:**
 
 - A ranked list of the top contributors based on total interactions (comments, labels, assignments, etc.).
 
@@ -67,17 +75,8 @@ Group Members:
 
   - (Graphically) Average contributions per day and performance compared to the regression model.
 
+Run with command:
 
-## To Do's:
-
-### Kevin
-
-- Complete Analysis #1
-
-### Anh
-
-- Complete Analysis #3
-
-### Michael
-
-- Complete Analysis #2
+```python
+python run.py --feature 3
+```
