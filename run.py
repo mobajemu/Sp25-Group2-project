@@ -10,6 +10,7 @@ import argparse
 import config
 from example_analysis import ExampleAnalysis
 from analysis_1 import EngagementResolutionAnalysis
+from analysis_3 import Analysis3
 
 
 def parse_args():
@@ -53,6 +54,8 @@ elif args.feature == 1:
 elif args.feature == 2:
     pass # TODO call second analysis
 elif args.feature == 3:
-    pass # TODO call third analysis
+    analysis = Analysis3()
+    
+    analysis.run_all_analysis(user=args.user)   
 else:
     print('Need to specify which feature to run with --feature flag.')
