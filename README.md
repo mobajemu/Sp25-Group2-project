@@ -20,9 +20,7 @@ Group Members:
 
 ## Task 3: Implementation
 
-### Analyses
-
-#### Analyses 1: Average Resolution Time vs Number of comments
+### Analysis 1: Average Resolution Time vs Number of comments
 
 **Insight:** Do issues with more discussion get resolved faster or slower?
 
@@ -51,7 +49,7 @@ python run.py --feature 1 # Analyze all issues
 python run.py --feature 1 --label {label_name} # Only issues with specified label
 ```
 
-#### Analyses 2: Issue Reopen Rate
+### Analysis 2: Issue Reopen Rate
 
 **Insight:** Which types of issues are most likely to be reopened?
 
@@ -68,7 +66,7 @@ python run.py --feature 1 --label {label_name} # Only issues with specified labe
 python run.py --feature 2
 ```
 
-#### Analyses 3: Top contributors' specialties
+### Analysis 3: Top contributors' specialties
 
 **Insight:** Who are the most active contributors and what types of issues do they spend their time on
 
